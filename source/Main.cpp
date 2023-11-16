@@ -19,25 +19,29 @@ public:
         if (!isDotShowing)
             return;
 
-        float x = (SCREEN_WIDTH / 2);
-        float y = (SCREEN_HEIGHT / 2);
+        rage::Vector2 pos = CHud::Components[aHudComponentInfo[HUD_WEAPON_DOT].m_nIndex]->pos;
+
+        float x = pos.x * SCREEN_WIDTH;
+        float y = pos.y * SCREEN_HEIGHT;
         float w = ScaleX(2.0f);
         float h = ScaleY(2.0f);
 
         auto playa = FindPlayerPed(0);
         if (playa) {
             CTaskSimpleAimGun* taskSimpleAimGun = playa->m_pPedIntelligence->m_TaskMgr.FindActiveTaskByType<CTaskSimpleAimGun>(TASK_AIM_GUN);
-            if (taskSimpleAimGun) {
-                if (dotSprite.m_pTexture) {
-                    CPed* ped = dynamic_cast<CPed*>(taskSimpleAimGun->GetAt(0, 0));
-                    rage::Color32 col = { 255, 255, 255, 255 };
-                    if (ped && ped->m_bNotInVehicle)
-                        col = CHudColours::Get(HUD_COLOUR_REDDARK, 255);
+            CPed* ped = nullptr;
 
-                    dotSprite.Push();
-                    CSprite2d::Draw(rage::Vector4(x - w, y - h, x + w, y + h), col);
-                    CSprite2d::Pop();
-                }
+            if (taskSimpleAimGun)
+                ped = dynamic_cast<CPed*>(taskSimpleAimGun->GetAt(0, 0));
+
+            if (dotSprite.m_pTexture) {
+                rage::Color32 col = { 255, 255, 255, 255 };
+                if (ped && ped->m_bNotInVehicle)
+                    col = CHudColours::Get(HUD_COLOUR_REDDARK, 255);
+
+                dotSprite.Push();
+                CSprite2d::Draw(rage::Vector4(x - w, y - h, x + w, y + h), col);
+                CSprite2d::Pop();
             }
         }
     }
