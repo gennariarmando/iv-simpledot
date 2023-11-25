@@ -32,16 +32,20 @@ public:
             CPed* ped = nullptr;
 
             if (taskSimpleAimGun)
-                ped = dynamic_cast<CPed*>(taskSimpleAimGun->GetAt(0, 0));
+                ped = dynamic_cast<CPed*>(taskSimpleAimGun->GetAt(0, 1));
 
-            if (dotSprite.m_pTexture) {
+            if (dotSprite.m_pTexture.ptr) {
                 rage::Color32 col = { 255, 255, 255, 255 };
-                if (ped && ped->m_bNotInVehicle)
-                    col = CHudColours::Get(HUD_COLOUR_REDDARK, 255);
+                if (ped) {
+                    if (CPed::IsPedDead(ped))
+                        col = CHudColours::Get(HUD_COLOUR_GREY, 255);
+                    else
+                        col = CHudColours::Get(HUD_COLOUR_REDDARK, 255);
+                }
 
-                dotSprite.Push();
-                CSprite2d::Draw(rage::Vector4(x - w, y - h, x + w, y + h), col);
-                CSprite2d::Pop();
+                dotSprite.SetRenderState();
+                CSprite2d::Draw(rage::fwRect(x - w, y - h, x + w, y + h), col);
+                CSprite2d::ClearRenderState();
             }
         }
     }
@@ -70,7 +74,7 @@ public:
                 return;
 
             auto base = new T_CB_Generic_NoArgs(DrawDot);
-            base->Append();
+            base->Init();
         };
     }
 } simpleDotIV;
