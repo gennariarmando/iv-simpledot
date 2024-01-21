@@ -35,12 +35,15 @@ public:
                 ped = dynamic_cast<CPed*>(taskSimpleAimGun->GetAt(0, 1));
 
             if (dotSprite.m_pTexture.ptr) {
-                rage::Color32 col = { 255, 255, 255, 255 };
+                rage::Color32 col = { 
+                    (uint8_t)255, (uint8_t)255, (uint8_t)255,
+                    CHud::Components[aHudComponentInfo[HUD_WEAPON_DOT].m_nIndex]->alpha // The game already automatically greys out the dot in specific instances.
+                };
                 if (ped) {
                     if (CPed::IsPedDead(ped))
-                        col = CHudColours::Get(HUD_COLOUR_GREY, 255);
+                        col = { 255, 255, 255, 60 }; // Default greyed out dot color.
                     else
-                        col = CHudColours::Get(HUD_COLOUR_REDDARK, 255);
+                        col = CHudColours::Get(HUD_COLOUR_RED);
                 }
 
                 dotSprite.SetRenderState();
